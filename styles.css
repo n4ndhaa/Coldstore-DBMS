@@ -1,0 +1,12 @@
+/* Fix select element styling */
+select {
+    background-color: #374151; /* Tailwind gray-700 */
+    color: #D1D5DB; /* Tailwind gray-300 */
+    border: 1px solid #4B5563; /* Tailwind gray-600 */
+    padding: 4px;
+    border-radius: 4px;
+}
+select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #3B82F6; /* Tailwind blue-500 */
+}

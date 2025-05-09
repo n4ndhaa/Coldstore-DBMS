@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cold Storage Management{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="bg-gray-900 text-gray-100 flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-800 h-screen p-6 fixed animate__animated animate__fadeInLeft">
+        <h1 class="text-2xl font-bold text-blue-400 mb-8">Cold Storage</h1>
+        <nav>
+            <a href="/dashboard" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Dashboard</a>
+            <a href="/warehouses" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Warehouses</a>
+            <a href="/products" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Products</a>
+            <a href="/orders" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Orders</a>
+            <a href="/inventory" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Inventory Logs</a>
+            <a href="/temperature" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Temperature Logs</a>
+            <a href="/feedback" class="block py-2 px-4 mb-2 rounded hover:bg-blue-600 transition duration-300">Feedback</a>
+            <a href="/logout" class="block py-2 px-4 mt-8 bg-red-600 rounded hover:bg-red-700 transition duration-300">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8 w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/static/scripts.js"></script>
+</body>
+</html>

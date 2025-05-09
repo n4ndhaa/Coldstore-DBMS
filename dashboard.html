@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold text-blue-400 mb-6 animate__animated animate__fadeIn">Dashboard</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg animate__animated animate__zoomIn">
+        <h3 class="text-lg text-gray-300">Total Warehouses</h3>
+        <p id="warehouse-count" class="text-3xl font-bold text-blue-400">0</p>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+        <h3 class="text-lg text-gray-300">Total Products</h3>
+        <p id="product-count" class="text-3xl font-bold text-blue-400">0</p>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg animate__animated animate__zoomIn" style="animation-delay: 0.4s;">
+        <h3 class="text-lg text-gray-300">Total Orders</h3>
+        <p id="order-count" class="text-3xl font-bold text-blue-400">0</p>
+    </div>
+</div>
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <h3 class="text-lg text-gray-300 mb-4">Stock Levels</h3>
+    <canvas id="stockChart" class="w-full h-64"></canvas>
+</div>
+<script>
+async function loadDashboard() {
+    try {
+        // Fetch stats
+        const statsResponse = await fetch('/api/dashboard_stats');
+        const stats = await statsResponse.json();
+        
+        // Animate counters
+        animateCounter('warehouse-count', stats.warehouses);
+        animateCounter('product-count', stats.products);
+        animateCounter('order-count', stats.orders);
+        
+        // Fetch stock data
+        const stockResponse = await fetch('/api/stock_summary');
+        const stock = await stockResponse.json();
+        
+        const ctx = document.getElementById('stockChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: stock.map(item => item.Product),
+                datasets: [{
+                    label: 'Stock Quantity',
+                    data: stock.map(item => item.Quantity),
+                    backgroundColor: '#3B82F6',
+                    borderColor: '#1E40AF',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#D1D5DB' }, grid: { color: '#4B5563' } },
+                    x: { ticks: { color: '#D1D5DB' }, grid: { color: '#4B5563' } }
+                },
+                plugins: { legend: { labels: { color: '#D1D5DB' } } }
+            }
+        });
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+{% endblock %}

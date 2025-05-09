@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Feedback{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold text-blue-400 mb-6 animate__animated animate__fadeIn">Feedback</h2>
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+    <h3 class="text-lg text-gray-300 mb-4">Submit Feedback</h3>
+    <div class="mb-4">
+        <label class="block text-gray-300 mb-2">Comment</label>
+        <textarea id="feedback-comment" class="w-full p-2 rounded bg-gray-700 text-gray-100" rows="4"></textarea>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-300 mb-2">Rating (1-5)</label>
+        <input id="feedback-rating" type="number" min="1" max="5" class="w-full p-2 rounded bg-gray-700 text-gray-100">
+    </div>
+    <button onclick="submitFeedback()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">Submit</button>
+</div>
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <h3 class="text-lg text-gray-300 mb-4">Your Feedback</h3>
+    <table class="w-full text-left">
+        <thead>
+            <tr class="bg-gray-700">
+                <th class="p-2">ID</th>
+                <th class="p-2">Comment</th>
+                <th class="p-2">Rating</th>
+                <th class="p-2">Date</th>
+            </tr>
+        </thead>
+        <tbody id="feedback-table"></tbody>
+    </table>
+</div>
+<script>
+async function loadFeedback() {
+    try {
+        const response = await fetch('/api/feedback');
+        const feedback = await response.json();
+        const tableBody = document.getElementById('feedback-table');
+        tableBody.innerHTML = '';
+        feedback.forEach(f => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="p-2">${f.FeedbackID}</td>
+                <td class="p-2">${f.Comment}</td>
+                <td class="p-2">${f.Rating}</td>
+                <td class="p-2">${new Date(f.Feedback_Date).toLocaleString()}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading feedback:', error);
+    }
+}
+
+async function submitFeedback() {
+    const comment = document.getElementById('feedback-comment').value;
+    const rating = document.getElementById('feedback-rating').value;
+    
+    await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ Comment: comment, Rating: rating })
+    });
+    
+    document.getElementById('feedback-comment').value = '';
+    document.getElementById('feedback-rating').value = '';
+    loadFeedback();
+}
+
+document.addEventListener('DOMContentLoaded', loadFeedback);
+</script>
+{% endblock %}

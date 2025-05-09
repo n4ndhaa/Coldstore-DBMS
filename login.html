@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="flex items-center justify-center h-screen">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md animate__animated animate__fadeIn">
+        <h2 class="text-2xl font-bold text-blue-400 mb-6 text-center">Login</h2>
+        <div id="error-message" class="hidden text-red-400 mb-4 text-center"></div>
+        <div class="mb-4">
+            <label class="block text-gray-300 mb-2" for="username">Username</label>
+            <input type="text" id="username" class="w-full p-2 rounded bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-300 mb-2" for="password">Password</label>
+            <input type="password" id="password" class="w-full p-2 rounded bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition duration-300">Login</button>
+    </div>
+</div>
+<script>
+async function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorDiv = document.getElementById('error-message');
+    
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const result = await response.json();
+        
+        if (result.error) {
+            errorDiv.textContent = result.error;
+            errorDiv.classList.remove('hidden');
+            errorDiv.classList.add('animate__animated', 'animate__shakeX');
+            setTimeout(() => errorDiv.classList.remove('animate__shakeX'), 1000);
+        } else {
+            window.location.href = result.redirect;
+        }
+    } catch (error) {
+        errorDiv.textContent = 'An error occurred';
+        errorDiv.classList.remove('hidden');
+    }
+}
+</script>
+{% endblock %}

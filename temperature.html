@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Temperature Logs{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold text-blue-400 mb-6 animate__animated animate__fadeIn">Temperature Logs</h2>
+<div class="mb-4">
+    <input id="temp-filter" type="number" placeholder="Max Temperature (°C)" class="p-2 rounded bg-gray-700 text-gray-100 w-full md:w-1/3" oninput="loadTemperature()">
+</div>
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <table class="w-full text-left">
+        <thead>
+            <tr class="bg-gray-700">
+                <th class="p-2">Log ID</th>
+                <th class="p-2">Sensor ID</th>
+                <th class="p-2">Temperature (°C)</th>
+                <th class="p-2">Timestamp</th>
+                <th class="p-2">Warehouse</th>
+            </tr>
+        </thead>
+        <tbody id="temperature-table"></tbody>
+    </table>
+</div>
+<script>
+async function loadTemperature() {
+    const maxTemp = document.getElementById('temp-filter').value;
+    try {
+        const response = await fetch(`/api/temperature_logs${maxTemp ? `?max_temp=${maxTemp}` : ''}`);
+        const logs = await response.json();
+        const tableBody = document.getElementById('temperature-table');
+        tableBody.innerHTML = '';
+        logs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="p-2">${log.LogID}</td>
+                <td class="p-2">${log.SensorID}</td>
+                <td class="p-2 ${log.Recorded_Temp > 5 ? 'text-red-400' : ''}">${log.Recorded_Temp} °C</td>
+                <td class="p-2">${new Date(log.Timestamp).toLocaleString()}</td>
+                <td class="p-2">${log.Warehouse}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error loading temperature logs:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadTemperature);
+</script>
+{% endblock %}
